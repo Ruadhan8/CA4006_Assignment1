@@ -5,40 +5,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class assignment1 {
-    private static Integer nbAssistants = 2;
-    private static Integer nbSections = 6;
+    private static Integer nbAssistants = 1;
+    private static Integer nbSections = 3;
     private static ArrayList<Section> sectionList = new ArrayList<Section>();
-    
-    private static void bookSectionManagement() {
-        ArrayList<String> sectionNameList = new ArrayList<String>(Arrays.asList("fiction", "horror", "romance", "fantasy", "poetry", "history"));
-        if (nbSections < 6) {
-            while (sectionNameList.size() > nbSections) {
-                sectionNameList.remove(sectionNameList.size() - 1);
-            }
-        } else if (nbSections > 6) {
-            for (int index = 1; sectionNameList.size() < nbSections; index++) {
-                sectionNameList.add("Other Category " + index);
-            }
-        }
-        for (String currentName : sectionNameList) {
-            sectionList.add(new Section(currentName, 0));
-        }
-    }
-    public static void main(String[] args) {
-        for (String src: args) {
-            String[] tmpArray = src.split("=");
+    ArrayList<String> sectionNameList = new ArrayList<String>(Arrays.asList("fiction", "poetry", "history"));
+    for ( int i = 0; i < 1000; i ++){
+        while (i == 100 || i == 200 || i == 300 || i == 400 || i == 500 || i == 600 || i == 700 || i == 800 || i == 900|| i == 1000){
 
-            if (tmpArray[0].equals("a")) {
-                nbAssistants = (Integer.parseInt(tmpArray[1]) != 0) ? Integer.parseInt(tmpArray[1]) : nbAssistants;
-            } else if (tmpArray[0].equals("s")) {
-                nbSections = (Integer.parseInt(tmpArray[1]) != 0) ? Integer.parseInt(tmpArray[1]) : nbSections;
-            }
         }
-        bookSectionManagement();
 
-
-        for (Section current : sectionList) {
-            System.out.println(current.getName());
-        }
-    }
 }

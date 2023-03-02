@@ -7,21 +7,14 @@ import Entities.Book;
  */
 public class Section {
     private String name;
-    private int nbMaxBook;
     private ArrayList<Book> booksList = new ArrayList<Book>();
 
-    public Section(String name, int nbMaxBook) {
+    public Section(String name) {
         this.name = name;
-        this.nbMaxBook = nbMaxBook;
-        this.booksList.add(new Book(name));
     }
 
     public String getName() {
         return this.name;
-    }
-
-    public int getNbMaxBook() {
-        return this.nbMaxBook;
     }
 
     public int getNbCurrentBook() {
@@ -29,7 +22,7 @@ public class Section {
     }
 
     public int addBook(Book newBook) {
-        if (booksList.size() + 1 <= nbMaxBook || nbMaxBook == 0) {
+        if (booksList.size() + 1 <= 100) {
             this.booksList.add(newBook);
             return 0;
         }
