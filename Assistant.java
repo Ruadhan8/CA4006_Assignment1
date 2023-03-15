@@ -2,37 +2,33 @@ import java.util.*;
 import java.util.concurrent.Semaphore;
 
 public class Assistant implements Runnable {
+    // Introducing an assistant class
     private final Object lock = new Object();
     private static Books book;
+    private int assistantTicks = 0;
     List<String> priorityType = new ArrayList<String>();
-    List<Books> booksInHands = new ArrayList<Books>();
+    List<Books> BooksPossessed = new ArrayList<Books>();
     private static Semaphore assistant = new Semaphore(1);
-    String name;
-
+    private static Semaphore assistantBreaks = new Semaphore(1);
+    static Random rand = new Random();
+    private static int randomNum= rand.nextInt(101) + 200;
     static int carrySpace = 10;
-    static boolean isBusy = false;
+    String name;
+    int booksCounter = 0;
+    
 
-    public Assistant(String name, List<Books> booksInHands) {
-        this.booksInHands = booksInHands;
+    // New instance of BooksPossessed and name for assistants
+    public Assistant(String name, List<Books> BooksPossessed, int booksCounter) {
+        this.BooksPossessed = BooksPossessed;
         this.name = name;
-        // this.booksToTake = booksToTake;
+        this.booksCounter = booksCounter;
     }
-
-    public static void TakeBreak() {
-        try {
-            Thread.sleep(Main.MilliSecondsNeeded(Main.TICK_TIME_SIZE, 15));
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
-    public List<Books> takeBookFromBox() {
-        List<Books> books = Box.getBooks();
+    // Take books from the box for each assistant with new BooksToTake variable each time
+    public List<Books> takeBooksFromBox() {
+        List<Books> books = Box.takeBooks();
         List<Books> booksToTake = new ArrayList<Books>();
 
         if (!books.isEmpty()) {
-            // System.out.println("Box contents are: " + books);
             while (booksToTake.size() < carrySpace) {
                 for (Books book : books) {
                     booksToTake.add(book);
@@ -44,15 +40,14 @@ public class Assistant implements Runnable {
             return null;
         }
     }
-
-    public List<Books> takePriorityBookFromBox(List<String> priorityType) {
-        List<Books> books = Box.getBooks();
+    // Take books from the box for each assistant with new BooksToTake variable each time
+    // with a list of book types being passed through
+    public List<Books> takePriorityBooksFromBox(List<String> priorityType) {
+        List<Books> books = Box.takeBooks();
         List<Books> booksToTake = new ArrayList<Books>();
 
         int i = 0;
         if (!books.isEmpty()) {
-            // System.out.println("Box contents are: " + books);
-
             while (booksToTake.size() < carrySpace) {
                 for (Books book : books) {
                     while (i < priorityType.size()) {
@@ -71,195 +66,172 @@ public class Assistant implements Runnable {
             return null;
         }
     }
-
-    public synchronized boolean isBusy() {
-        return isBusy;
-    }
-
-    // public int size() {
-    // int Size = booksToTake.size();
-
-    // // System.out.print(Size);
-
-    // return Size;
-    // }
-
-    public boolean IsWaiting(Queue<String> Shelf) {
-        boolean IsWaiting = false;
+    
+    // Checks to see if a customer is waiting at a certain shelf
+    public boolean waiting(Queue<String> Shelf) {
+        boolean waiting = false;
         if (Shelf.size() != 0) {
-            IsWaiting = true;
+            waiting = true;
         }
 
-        return IsWaiting;
+        return waiting;
     }
-
-    public int HowLongWillItTake(List<Books> BookInHand) {
-        int BaseTimeToWalkToSection = 10000 / Main.TICK_TIME_SIZE;
-
-        int HowMuchExtraForBook = (1000 / Main.TICK_TIME_SIZE) * BookInHand.size();
-
-        int TotalSleepTime = BaseTimeToWalkToSection + HowMuchExtraForBook;
-
-        TotalSleepTime = TotalSleepTime / 100;
-
-        return TotalSleepTime;
-    }
-
-    // @Override
-    // public String toString() {
-    // return "" + booksToTake;
-    // }
 
     @Override
     public void run() {
-
+        // continues to run while thread is active
         while (true) {
             long threadId = Thread.currentThread().getId();
             try {
 
-                Thread.sleep(1 * Main.TICK_TIME_SIZE);
+                Thread.sleep(1 * Main.TickTimeSize); // sleep for 1 tick
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
+            assistantTicks++;
+
             try {
-                assistant.acquire();
+                assistant.acquire(); 
+                // semaphore is used to ensure two assistants aren't going to box at the same time
                 if (!Box.BooksInBox.isEmpty()) {
-                    if (IsWaiting(Shelve.CrimeWaitingLine)) {
-                        priorityType.add("Crime");
+                    if (waiting(Shelve.HistoryWaitingLine)) {
+                        priorityType.add("History");
                     }
-                    if (IsWaiting(Shelve.HorrorWaitingLine)) {
+                    if (waiting(Shelve.HorrorWaitingLine)) {
                         priorityType.add("Horror");
                     }
-                    if (IsWaiting(Shelve.RomanceWaitingLine)) {
+                    if (waiting(Shelve.RomanceWaitingLine)) {
                         priorityType.add("Romance");
                     }
-                    if (IsWaiting(Shelve.FantasyWaitingLine)) {
+                    if (waiting(Shelve.FantasyWaitingLine)) {
                         priorityType.add("Fantasy");
                     }
-                    if (IsWaiting(Shelve.FictionWaitingLine)) {
+                    if (waiting(Shelve.FictionWaitingLine)) {
                         priorityType.add("Fiction");
                     }
-                    if (IsWaiting(Shelve.SportWaitingLine)) {
-                        priorityType.add("Sport");
+                    if (waiting(Shelve.PoetryWaitingLine)) {
+                        priorityType.add("Poetry");
                     }
-
-                    System.out.println(priorityType);
-
                     try {
-                        if (booksInHands.size() == 0 && priorityType.size() == 0) {
+                        // when assitant has no books in hand and there is no one waiting in a queue, take books from box
+                        if (BooksPossessed.size() == 0 && priorityType.size() == 0) { 
                             try {
-                                Thread.sleep(10 * Main.TICK_TIME_SIZE);
+                                Thread.sleep(10 * Main.TickTimeSize);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
-                            booksInHands = takeBookFromBox();
-                        } else if (booksInHands.size() == 0 && priorityType.size() != 0) {
+                            BooksPossessed = takeBooksFromBox();
+                        } // when assitant has no books in hand and there are people waiting in queues, take books from box
+                        else if (BooksPossessed.size() == 0 && priorityType.size() != 0) {
                             try {
-                                Thread.sleep(10 * Main.TICK_TIME_SIZE);
+                                Thread.sleep(10 * Main.TickTimeSize);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
-                            booksInHands = takePriorityBookFromBox(priorityType);
+                            BooksPossessed = takePriorityBooksFromBox(priorityType);
                         }
-                        System.out.println("<" + threadId + ">" + "Book in hand: " + booksInHands);
-
+                        System.out.println("<"+Main.tickCount+">"+"<"+threadId+">"+name+" collected 10 books from the box, the books are: " + BooksPossessed);
                     } finally {
 
                     }
-
+                    
                     try {
-                        Thread.sleep((booksInHands.size() + 10) * Main.TICK_TIME_SIZE);
+                        Thread.sleep((BooksPossessed.size() + 10) * Main.TickTimeSize); // sleep for 10 ticks
                     } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             } finally {
-                assistant.release();
+                // release the semaphore so another assistant can access this
+                assistant.release(); 
 
             }
-
-            if (booksInHands.size() != 0) {
-                synchronized (lock) {
-                    Iterator<Books> iterator = booksInHands.iterator();
-                    if (booksInHands.toString().contains("Fiction")) {
-                        while (iterator.hasNext()) {
+            // as long as books in hands does not equal 0, so assistant possesses books
+            if (BooksPossessed.size() != 0) {
+                synchronized (lock) { 
+                    // create an iterator which iterates through the books possessed
+                    Iterator<Books> iterator = BooksPossessed.iterator();
+                    // if the BooksPossessed has a fiction book
+                    if (BooksPossessed.toString().contains("Fiction")) {
+                        // while there is still a book in the iterator list 
+                        while (iterator.hasNext()) { 
                             book = iterator.next();
+                            //if the book is a fiction book
                             if (book.toString().equals("Fiction")) {
-                                Shelve.AddBookToShelves(book);
-                                iterator.remove(); // remove the book from booksInHands
-                                System.out.println("<" + Main.tickCount + ">" + "Fiction: " +
-                                        Shelve.FictionShelf);
+                                // stack the fiction book onto the shelf 
+                                Shelve.AddBooksToShelves(book); 
+                                // remove the book from BooksPossessed
+                                iterator.remove(); 
+                                // increment a book counter to count how many fiction books were stacked
+                                booksCounter++; 
                                 try {
-                                    Thread.sleep(1 * Main.TICK_TIME_SIZE);
+                                    Thread.sleep(1 * Main.TickTimeSize);
                                 } catch (InterruptedException e) {
-                                    // TODO Auto-generated catch block
                                     e.printStackTrace();
                                 }
                             }
-                            if (!iterator.hasNext()) { // stay at the Fiction shelf until all Fiction
-
+                             // stay at the Fiction shelf until all of  the Fiction books are stacked
+                            if (!iterator.hasNext()) {
+                                System.out.println("<" + Main.tickCount + ">" + "<" + threadId + ">" + name + " began stocking FICTION section with " + booksCounter + " books");
+                                // reset counter to 0 it can be reused
+                                booksCounter = 0; 
                                 try {
-                                    Thread.sleep((booksInHands.size() + 10) * Main.TICK_TIME_SIZE);
+                                    // sleep for one tick for every book still possessed + 10 ticks
+                                    Thread.sleep((BooksPossessed.size() + 10) * Main.TickTimeSize); 
                                 } catch (InterruptedException e) {
-                                    // TODO Auto-generated catch block
                                     e.printStackTrace();
                                 }
                             }
                         }
                     }
-                    if (booksInHands.toString().contains("Sport")) {
-                        iterator = booksInHands.iterator();
+                    // operates the same as above
+                    if (BooksPossessed.toString().contains("Poetry")) {
+                        iterator = BooksPossessed.iterator();
                         while (iterator.hasNext()) {
-                            // System.out.println("In SPort");
                             book = iterator.next();
-                            if (book.toString().equals("Sport")) {
-                                Shelve.AddBookToShelves(book);
-                                iterator.remove(); // remove the book from booksInHands
-                                System.out.println("<" + Main.tickCount + ">" + "Sport: " +
-                                        Shelve.SportShelf);
+                            if (book.toString().equals("Poetry")) {
+                                Shelve.AddBooksToShelves(book);
+                                iterator.remove(); 
+                                booksCounter++;
                                 try {
-                                    Thread.sleep(1 * Main.TICK_TIME_SIZE);
+                                    Thread.sleep(1 * Main.TickTimeSize);
                                 } catch (InterruptedException e) {
-                                    // TODO Auto-generated catch block
                                     e.printStackTrace();
                                 }
                             }
-                            if (!iterator.hasNext()) { // stay at the Fiction shelf until all Fiction
-                                // stacked
+                            if (!iterator.hasNext()) { 
+                                System.out.println("<" + Main.tickCount + ">" + "<" + threadId + ">" + name + " began stocking Poetry section with " + booksCounter + " books");
+                                booksCounter = 0;
                                 try {
-                                    Thread.sleep((booksInHands.size() + 10) * Main.TICK_TIME_SIZE);
+                                    Thread.sleep((BooksPossessed.size() + 10) * Main.TickTimeSize);
                                 } catch (InterruptedException e) {
-                                    // TODO Auto-generated catch block
                                     e.printStackTrace();
                                 }
                             }
                         }
                     }
-                    iterator = booksInHands.iterator();
-                    if (booksInHands.toString().contains("Fantasy")) {
+                    // operates the same as fiction shelf
+                    if (BooksPossessed.toString().contains("Fantasy")) {
+                        iterator = BooksPossessed.iterator();
                         while (iterator.hasNext()) {
                             book = iterator.next();
                             if (book.toString().equals("Fantasy")) {
-                                Shelve.AddBookToShelves(book);
-                                iterator.remove(); // remove the book from booksInHands
-                                System.out.println("<" + Main.tickCount + ">" + "Fantasy: " +
-                                        Shelve.FantasyShelf);
+                                Shelve.AddBooksToShelves(book);
+                                iterator.remove();
+                                booksCounter++;
                                 try {
-                                    Thread.sleep(1 * Main.TICK_TIME_SIZE);
+                                    Thread.sleep(1 * Main.TickTimeSize);
                                 } catch (InterruptedException e) {
-                                    // TODO Auto-generated catch block
                                     e.printStackTrace();
                                 }
                             }
-                            if (!iterator.hasNext()) { // stay at the Fiction shelf until all Fiction
-                                // stacked
+                            if (!iterator.hasNext()) {
+                                System.out.println("<" + Main.tickCount + ">" + "<" + threadId + ">" + name + " began stocking FANTASY section with " + booksCounter + " books");
+                                booksCounter = 0;
                                 try {
-                                    Thread.sleep((booksInHands.size() + 10) * Main.TICK_TIME_SIZE);
+                                    Thread.sleep((BooksPossessed.size() + 10) * Main.TickTimeSize);
                                 } catch (InterruptedException e) {
                                     // TODO Auto-generated catch block
                                     e.printStackTrace();
@@ -267,27 +239,28 @@ public class Assistant implements Runnable {
                             }
                         }
                     }
-                    if (booksInHands.toString().contains("Horror")) {
-                        iterator = booksInHands.iterator();
+                    // operates the same as fiction shelf
+                    if (BooksPossessed.toString().contains("Horror")) {
+                        iterator = BooksPossessed.iterator();
 
                         while (iterator.hasNext()) {
                             book = iterator.next();
                             if (book.toString().equals("Horror")) {
-                                Shelve.AddBookToShelves(book);
-                                iterator.remove(); // remove the book from booksInHands
-                                System.out.println("<" + Main.tickCount + ">" + "Horror: " +
-                                        Shelve.HorrorShelf);
+                                Shelve.AddBooksToShelves(book);
+                                iterator.remove();
+                                booksCounter++;
                                 try {
-                                    Thread.sleep(1 * Main.TICK_TIME_SIZE);
+                                    Thread.sleep(1 * Main.TickTimeSize);
                                 } catch (InterruptedException e) {
                                     // TODO Auto-generated catch block
                                     e.printStackTrace();
                                 }
                             }
-                            if (!iterator.hasNext()) { // stay at the Fiction shelf until all Fiction
-                                // stacked
+                            if (!iterator.hasNext()) {
+                                System.out.println("<" + Main.tickCount + ">" + "<" + threadId + ">" + name + " began stocking HORROR section with " + booksCounter + " books");
+                                booksCounter = 0;
                                 try {
-                                    Thread.sleep((booksInHands.size() + 10) * Main.TICK_TIME_SIZE);
+                                    Thread.sleep((BooksPossessed.size() + 10) * Main.TickTimeSize);
                                 } catch (InterruptedException e) {
                                     // TODO Auto-generated catch block
                                     e.printStackTrace();
@@ -295,27 +268,28 @@ public class Assistant implements Runnable {
                             }
                         }
                     }
-                    if (booksInHands.toString().contains("Crime")) {
-                        iterator = booksInHands.iterator();
+                    // operates the same as above 
+                    if (BooksPossessed.toString().contains("History")) {
+                        iterator = BooksPossessed.iterator();
 
                         while (iterator.hasNext()) {
                             book = iterator.next();
-                            if (book.toString().equals("Crime")) {
-                                Shelve.AddBookToShelves(book);
-                                iterator.remove(); // remove the book from booksInHands
-                                System.out.println("<" + Main.tickCount + ">" + "Crime: " +
-                                        Shelve.CrimeShelf);
+                            if (book.toString().equals("History")) {
+                                Shelve.AddBooksToShelves(book);
+                                iterator.remove();
+                                booksCounter++;
                                 try {
-                                    Thread.sleep(1 * Main.TICK_TIME_SIZE);
+                                    Thread.sleep(1 * Main.TickTimeSize);
                                 } catch (InterruptedException e) {
                                     // TODO Auto-generated catch block
                                     e.printStackTrace();
                                 }
                             }
-                            if (!iterator.hasNext()) { // stay at the Fiction shelf until all Fiction
-                                // stacked
+                            if (!iterator.hasNext()) {
+                                System.out.println("<" + Main.tickCount + ">" + "<" + threadId + ">" + name + " began stocking History section with " + booksCounter + " books");
+                                booksCounter = 0;
                                 try {
-                                    Thread.sleep((booksInHands.size() + 10) * Main.TICK_TIME_SIZE);
+                                    Thread.sleep((BooksPossessed.size() + 10) * Main.TickTimeSize);
                                 } catch (InterruptedException e) {
                                     // TODO Auto-generated catch block
                                     e.printStackTrace();
@@ -323,29 +297,27 @@ public class Assistant implements Runnable {
                             }
                         }
                     }
-                    if (booksInHands.toString().contains("Romance")) {
-                        iterator = booksInHands.iterator();
-
+                    // operates the same as above 
+                    if (BooksPossessed.toString().contains("Romance")) {
+                        iterator = BooksPossessed.iterator();
                         while (iterator.hasNext()) {
                             book = iterator.next();
                             if (book.toString().equals("Romance")) {
-                                Shelve.AddBookToShelves(book);
-                                iterator.remove(); // remove the book from booksInHands
-                                System.out.println("<" + Main.tickCount + ">" + "Romance: " +
-                                        Shelve.RomanceShelf);
+                                Shelve.AddBooksToShelves(book);
+                                iterator.remove();
+                                booksCounter++;
                                 try {
-                                    Thread.sleep(1 * Main.TICK_TIME_SIZE);
+                                    Thread.sleep(1 * Main.TickTimeSize);
                                 } catch (InterruptedException e) {
-                                    // TODO Auto-generated catch block
                                     e.printStackTrace();
                                 }
                             }
-                            if (!iterator.hasNext()) { // stay at the Fiction shelf until all Fiction
-                                // stacked
+                            if (!iterator.hasNext()) {
+                                System.out.println("<" + Main.tickCount + ">" + "<" + threadId + ">" + name + " began stocking Romance section with " + booksCounter + " books");
+                                booksCounter = 0;
                                 try {
-                                    Thread.sleep((booksInHands.size() + 10) * Main.TICK_TIME_SIZE);
+                                    Thread.sleep((BooksPossessed.size() + 10) * Main.TickTimeSize);
                                 } catch (InterruptedException e) {
-                                    // TODO Auto-generated catch block
                                     e.printStackTrace();
                                 }
                             }
@@ -353,24 +325,31 @@ public class Assistant implements Runnable {
                     }
                 }
             }
-        }
 
-        // System.out.println(booksInHands);
-        // System.out.println("Check books");
+            // if assistantsTicks modulo the random number between 200-300
+            if(assistantTicks % randomNum== 0)
+            {
+                try {
+                    // semaphore acquire so only one assitant can take a break at a time
+                    assistantBreaks.acquire(); 
+                    System.out.println("<"+Main.tickCount+">"+"<"+threadId+">"+ name + " is on their break.");
+                    // sleep for 150 ticks
+                    Thread.sleep(150 * Main.TickTimeSize);
+                    // generate another random number between 200-300 and add the current assistant ticks to it
+                } catch (InterruptedException e) {
+                    randomNum= rand.nextInt(101) + 200 + assistantTicks; 
+                    e.printStackTrace();
+                }
+                finally{
+                    // release the sempahore so another assistant can take a break
+                    assistantBreaks.release(); 
+                    System.out.println("<"+Main.tickCount+">"+"<"+threadId+">"+ name + " is back from their break.");
+
+                }
+            }
+        }
     }
 
     public static void main(String[] args) {
-        // Box books = new Box();
-        // books.main(args);
-        // System.out.println(books.toString());
-        // takeBookFromBox(books);
-        // System.out.println(books.toString());
-
-        // System.out.println(booksToTake.toString());
-        // System.out.println(takeBookFromBox(books));
     }
-
-    // public List<Book> getBook() {
-    // return booksToTake;
-    // }
 }

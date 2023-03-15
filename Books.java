@@ -20,11 +20,11 @@ public class Books {
     public static String GiveBookACategorie() {
         List<String> ListOfCategories = new ArrayList<String>();
         ListOfCategories.add("Fiction");
-        ListOfCategories.add("Crime");
+        ListOfCategories.add("History");
         ListOfCategories.add("Fantasy");
         ListOfCategories.add("Romance");
         ListOfCategories.add("Horror");
-        ListOfCategories.add("Sport");
+        ListOfCategories.add("Poetry");
         int UpperRange = ListOfCategories.size();
 
         Random rand = new Random();
