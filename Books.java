@@ -1,7 +1,7 @@
 import java.util.*;
 import java.util.Random;
 
-public class Book {
+public class Books {
     String Category;
 
     public void Category() {
@@ -20,11 +20,11 @@ public class Book {
     public static String GiveBookACategorie() {
         List<String> ListOfCategories = new ArrayList<String>();
         ListOfCategories.add("Fiction");
-        ListOfCategories.add("Crime");
+        ListOfCategories.add("History");
         ListOfCategories.add("Fantasy");
         ListOfCategories.add("Romance");
         ListOfCategories.add("Horror");
-        ListOfCategories.add("Sport");
+        ListOfCategories.add("Poetry");
         int UpperRange = ListOfCategories.size();
 
         Random rand = new Random();
@@ -35,8 +35,8 @@ public class Book {
         return BookCategory;
     }
 
-    public static Book GenerateBook() {
-        Book book = new Book();
+    public static Books GenerateBook() {
+        Books book = new Books();
         book.setCategory();
 
         return book;
@@ -44,7 +44,7 @@ public class Book {
     
 
     public static void main(String[] args) {
-        Book book = new Book();
+        Books book = new Books();
         book.setCategory();
     }
 }

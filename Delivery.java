@@ -2,16 +2,16 @@ import java.util.*;
 import java.security.SecureRandom;
 
 public class Delivery {
-    static Object Book = new Book();
+    static Object Books = new Books();
     static int size = 10;
-    public static List<Book> DeliveryList = new ArrayList<Book>();
+    public static List<Books> DeliveryList = new ArrayList<Books>();
     static int DeliveryCount = 0;
 
-    public static List<Book> GenerateDelivery() {
+    public static List<Books> GenerateDelivery() {
         int i = 0;
 
         while (i < size) {
-            Book book = new Book();
+            Books book = new Books();
 
             book.setCategory();
 
@@ -19,17 +19,11 @@ public class Delivery {
 
             i++;
         }
-
-        // Used for Testing .... System.out.print(DeliveryList);
-
         return DeliveryList;
     }
 
     public int size() {
         int Size = DeliveryList.size();
-
-        // System.out.print(Size);
-
         return Size;
     }
 

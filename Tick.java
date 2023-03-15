@@ -2,104 +2,92 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-// Creating a Tick Class to manage the passing of Time and Statistics for the EOD in the Bookstore
+// Tick class to manage the passing of time and statistics for the EOD in the store
 public class Tick implements Runnable {
-    private Box bookstore;
+    private Box box;
     private Random random = new Random();
-    private static String deliveryTime = Delivery.NextDeliveryTime();
     public static boolean deliveryRecieved = false;
     public static int DeliveryCount = 0;
     public static int CustomersPrior = 0;
     public static int CustomersServedPrior = 0;
 
-    public Tick(Box bookstore) {
-        this.bookstore = bookstore;
+    public Tick(Box box) {
+        this.box = box;
     }
 
-    // Runner Code for the Thread
+    // code for the thread
     @Override
     public void run() {
 
         while (true) {
                 try {
-                    Thread.sleep(1 * Main.TICK_TIME_SIZE);
+                    // sleep for one tick
+                    Thread.sleep(1 * Main.TickTimeSize); 
                 } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-                // System.out.println(Main.tickCount);
                 long threadId = Thread.currentThread().getId();
-
+                // run NextDeliveryTime in delivery file that returns either True or False
                 String isDelivery = Delivery.NextDeliveryTime();
-                if (isDelivery == "True") {
-                    Thread bookstoreThread = new Thread(bookstore);
+                // if what is returned is True 
+                if (isDelivery == "True") { 
+                    // create a new thread for the box
+                    Thread boxThread = new Thread(box); 
+
                     System.out.println("<" + Main.tickCount + "> <" + threadId + ">" + "Recieved a delivery!");
-                    bookstoreThread.run();
-                    deliveryTime = Delivery.NextDeliveryTime();
-                    deliveryTime += Main.tickCount;
-                    System.out.println("<" + Main.tickCount + "> <" + threadId + ">" + " Box: " + Box.box);
-                    deliveryRecieved = true;
-                    DeliveryCount++;
+                    // run the box thread and have it stop when it is finished
+                    
+                    boxThread.run();
+
+                    System.out.println("<" + Main.tickCount + "> <" + threadId + ">" + " Box: " + Box.box); 
+                    // increment delivery counter
+                    DeliveryCount++; 
                 }
                 
                 Main.tickCount++;
-
-                if (Main.tickCount % Main.TICKS_PER_DAY == 0) {
-                    int AverageWaitTime = Customer.WaitTimeAverage(Customer.CustomerWaitTimes);
+                // if the tickCount modulo ticks per day (1000) == 0
+                if (Main.tickCount % Main.TicksPerDay == 0) { 
+                    // get the average wait time of the customers
+                    int AverageWaitTime = Customer.WaitTimeAverage(Customer.CustomerWaitTimes); 
+                     // get the amount of deliverys done that day
                     int DeliveryAmount = Tick.DeliveryCount;
-                    int TotalCustomers = Customer.customerCount;
-                    int TotalCustomersServed = Customer.customerServedCount;
+                    // get the total customers today
+                    int TotalCustomers = Customer.customerCount; 
+                    // get the total amount of customers served in a day
+                    int TotalCustomersServed = Customer.servedCustomerCount; 
+
                     int CustomersInDay = 0;
                     int CustomersServedInDay = 0;
 
-
-                    if (Main.tickCount < Main.TICKS_PER_DAY) {
-                        CustomersInDay = TotalCustomers;
+                    // gets the customers from the first day
+                    if (Main.tickCount < Main.TicksPerDay) { 
+                        CustomersInDay = TotalCustomers; 
                         CustomersServedInDay = TotalCustomersServed;
                     }  
 
                     else {
+                        // gets the customers from every other day after the first day
                         CustomersInDay = TotalCustomers - CustomersPrior;
                         CustomersServedInDay = TotalCustomersServed - CustomersServedPrior;
                     }
 
                     CustomersPrior = Customer.customerCount;
-                    CustomersServedPrior = Customer.customerServedCount;
+                    CustomersServedPrior = Customer.servedCustomerCount;
 
-                    System.out.println("It is the End of the Day here are the statistics for the Day: ");
-                    System.out.println("There was this many customers visting today: " + CustomersInDay);
-                    System.out.println("There was this many customers served today: " + CustomersServedInDay);
-                    System.out.println("There was this many deliverys: " + DeliveryAmount);
-                    System.out.println("The Average Wait Time of Customers was: " + AverageWaitTime);
+                    System.out.println("It is the end of the day here are the statistics for the day: ");
+                    System.out.println("There were this many customers visting today: " + CustomersInDay);
+                    System.out.println("There were this many customers served today: " + CustomersServedInDay);
+                    System.out.println("There were this many deliverys: " + DeliveryAmount);
+                    System.out.println("The average wait time of customers was: " + AverageWaitTime);
         
-                    Customer.ClearWaitTime(Customer.CustomerWaitTimes);
-                    Tick.DeliveryCount = 0;
+                    Customer.ClearWaitTime(Customer.CustomerWaitTimes); 
+                    Tick.DeliveryCount = 0; 
                 }
-                // Main.TICKS_PER_DAY--;
-                // System.out.println(Main.TICKS_PER_DAY);
-                // System.out.println(Main.tickCount);
-                // Randomly generate a customer every 10 ticks (on average)
-                // if (random.nextInt(10) == 0) {
-                // // Generate a random genre
-                // String[] genres = {"fiction", "horror", "romance", "fantasy", "poetry",
-                // "history"};
-                // String genre = genres[random.nextInt(genres.length)];
-
-                // // Attempt to buy a book from the genre
-                // boolean success = bookstore.getBook(genre);
-
-                // // If the purchase was successful, print a message
-                // if (success) {
-                // System.out.println("Customer bought a " + genre + " book.");
-                // }
-                // }
         
         }
     }
 
     public static void main(String[] args) {
-        // Tick tickThread = new Tick(bookstore);
-        // Thread ticks = new Thread(tickThread);
-        // ticks.run();
+
     }
 }
