@@ -3,16 +3,16 @@ import java.util.concurrent.Semaphore;
 
 public class Assistant implements Runnable {
     private final Object lock = new Object();
-    private static Book book;
+    private static Books book;
     List<String> priorityType = new ArrayList<String>();
-    List<Book> booksInHands = new ArrayList<Book>();
+    List<Books> booksInHands = new ArrayList<Books>();
     private static Semaphore assistant = new Semaphore(1);
     String name;
 
     static int carrySpace = 10;
     static boolean isBusy = false;
 
-    public Assistant(String name, List<Book> booksInHands) {
+    public Assistant(String name, List<Books> booksInHands) {
         this.booksInHands = booksInHands;
         this.name = name;
         // this.booksToTake = booksToTake;
@@ -27,14 +27,14 @@ public class Assistant implements Runnable {
         }
     }
 
-    public List<Book> takeBookFromBox() {
-        List<Book> books = Box.getBook();
-        List<Book> booksToTake = new ArrayList<Book>();
+    public List<Books> takeBookFromBox() {
+        List<Books> books = Box.getBooks();
+        List<Books> booksToTake = new ArrayList<Books>();
 
         if (!books.isEmpty()) {
             // System.out.println("Box contents are: " + books);
             while (booksToTake.size() < carrySpace) {
-                for (Book book : books) {
+                for (Books book : books) {
                     booksToTake.add(book);
                 }
             }
@@ -45,16 +45,16 @@ public class Assistant implements Runnable {
         }
     }
 
-    public List<Book> takePriorityBookFromBox(List<String> priorityType) {
-        List<Book> books = Box.getBook();
-        List<Book> booksToTake = new ArrayList<Book>();
+    public List<Books> takePriorityBookFromBox(List<String> priorityType) {
+        List<Books> books = Box.getBooks();
+        List<Books> booksToTake = new ArrayList<Books>();
 
         int i = 0;
         if (!books.isEmpty()) {
             // System.out.println("Box contents are: " + books);
 
             while (booksToTake.size() < carrySpace) {
-                for (Book book : books) {
+                for (Books book : books) {
                     while (i < priorityType.size()) {
                         if (book.toString() == priorityType.get(i)) {
                             booksToTake.add(book);
@@ -93,7 +93,7 @@ public class Assistant implements Runnable {
         return IsWaiting;
     }
 
-    public int HowLongWillItTake(List<Book> BookInHand) {
+    public int HowLongWillItTake(List<Books> BookInHand) {
         int BaseTimeToWalkToSection = 10000 / Main.TICK_TIME_SIZE;
 
         int HowMuchExtraForBook = (1000 / Main.TICK_TIME_SIZE) * BookInHand.size();
@@ -124,7 +124,7 @@ public class Assistant implements Runnable {
             }
             try {
                 assistant.acquire();
-                if (!Box.BookInBox.isEmpty()) {
+                if (!Box.BooksInBox.isEmpty()) {
                     if (IsWaiting(Shelve.CrimeWaitingLine)) {
                         priorityType.add("Crime");
                     }
@@ -151,7 +151,6 @@ public class Assistant implements Runnable {
                             try {
                                 Thread.sleep(10 * Main.TICK_TIME_SIZE);
                             } catch (InterruptedException e) {
-                                // TODO Auto-generated catch block
                                 e.printStackTrace();
                             }
                             booksInHands = takeBookFromBox();
@@ -159,7 +158,6 @@ public class Assistant implements Runnable {
                             try {
                                 Thread.sleep(10 * Main.TICK_TIME_SIZE);
                             } catch (InterruptedException e) {
-                                // TODO Auto-generated catch block
                                 e.printStackTrace();
                             }
                             booksInHands = takePriorityBookFromBox(priorityType);
@@ -187,7 +185,7 @@ public class Assistant implements Runnable {
 
             if (booksInHands.size() != 0) {
                 synchronized (lock) {
-                    Iterator<Book> iterator = booksInHands.iterator();
+                    Iterator<Books> iterator = booksInHands.iterator();
                     if (booksInHands.toString().contains("Fiction")) {
                         while (iterator.hasNext()) {
                             book = iterator.next();

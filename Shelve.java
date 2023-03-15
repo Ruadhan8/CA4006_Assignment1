@@ -1,70 +1,59 @@
 import java.util.*;
 
 public class Shelve {
-    static int capacity = 20;
-    static List<Book> FictionShelf = new ArrayList<Book>();
-    static List<Book> HorrorShelf = new ArrayList<Book>();
-    static List<Book> SportShelf = new ArrayList<Book>();
-    static List<Book> FantasyShelf = new ArrayList<Book>();
-    static List<Book> RomanceShelf = new ArrayList<Book>();
-    static List<Book> CrimeShelf = new ArrayList<Book>();
+    static int MaxBooksOnShelf = 20;
+    static List<Books> FictionShelf = new ArrayList<Books>();
+    static List<Books> HorrorShelf = new ArrayList<Books>();
+    static List<Books> PoetryShelf = new ArrayList<Books>();
+    static List<Books> FantasyShelf = new ArrayList<Books>();
+    static List<Books> RomanceShelf = new ArrayList<Books>();
+    static List<Books> HistoryShelf = new ArrayList<Books>();
     static Queue<String> FictionWaitingLine = new LinkedList<>();
     static Queue<String> HorrorWaitingLine = new LinkedList<>();
-    static Queue<String> SportWaitingLine = new LinkedList<>();
+    static Queue<String> PoetryWaitingLine = new LinkedList<>();
     static Queue<String> FantasyWaitingLine = new LinkedList<>();
     static Queue<String> RomanceWaitingLine = new LinkedList<>();
-    static Queue<String> CrimeWaitingLine = new LinkedList<>();
+    static Queue<String> HistoryWaitingLine = new LinkedList<>();
 
-    public static void AddBookToShelves(Book book) {
-        // for (Book book : assistant.getBook()) {
-        // System.out.println(book.toString().equals("Fiction"));
-        // System.out.println(book);
+
+    // adds books to shelves
+    public static void AddBooksToShelves(Books book) {
+
         if (book.toString().equals("Fiction")) {
-            if (FictionShelf.size() < capacity) {
+            if (FictionShelf.size() < MaxBooksOnShelf) {
                 FictionShelf.add(book);
             }
         } else if (book.toString().equals("Horror")) {
-            if (HorrorShelf.size() < capacity) {
+            if (HorrorShelf.size() < MaxBooksOnShelf) {
                 HorrorShelf.add(book);
             }
         } else if (book.toString().equals("Sport")) {
-            if (SportShelf.size() < capacity) {
-                SportShelf.add(book);
+            if (PoetryShelf.size() < MaxBooksOnShelf) {
+                PoetryShelf.add(book);
             }
         } else if (book.toString().equals("Fantasy")) {
-            if (FantasyShelf.size() < capacity) {
+            if (FantasyShelf.size() < MaxBooksOnShelf) {
                 FantasyShelf.add(book);
             }
         } else if (book.toString().equals("Romance")) {
-            if (RomanceShelf.size() < capacity) {
+            if (RomanceShelf.size() < MaxBooksOnShelf) {
                 RomanceShelf.add(book);
             }
         } else if (book.toString().equals("Crime")) {
-            if (CrimeShelf.size() < capacity) {
-                CrimeShelf.add(book);
+            if (HistoryShelf.size() < MaxBooksOnShelf) {
+                HistoryShelf.add(book);
             }
         }
-
-        // return FictionShelf, SportShelf, HorrorShelf, FantasyShelf, RomanceShelf,
-        // CrimeShelf;
-        // System.out.println(FictionShelf);
-        // System.out.println(HorrorShelf);
-        // System.out.println(SportShelf);
-        // System.out.println(FantasyShelf);
-        // System.out.println(RomanceShelf);
-        // System.out.println(CrimeShelf);
-        // return RomanceShelf;
     }
 
-    public static Queue<String> CustomerWaitingLine(Queue<String> CustomerWaitingLine, String Customer) {
+    public static Queue<String> CustomerWaitingQueue(Queue<String> CustomerWaitingQueue, String Customer) {
 
-        CustomerWaitingLine.add(Customer);
-
-        return CustomerWaitingLine;
+        CustomerWaitingQueue.add(Customer);
+        return CustomerWaitingQueue;
     }
 
-    public static boolean LineEmpty(Queue<String> CustomerWaitingLine) {
-        if (CustomerWaitingLine.size() == 0) {
+    public static boolean LineEmpty(Queue<String> CustomerWaitingQueue) {
+        if (CustomerWaitingQueue.size() == 0) {
             return true;
         } else {
             return false;
@@ -78,10 +67,6 @@ public class Shelve {
     }
 
     public static void main(String[] args) {
-        // Assistant assistant = new Assistant();
-        // assistant.main(args);
-        // System.out.println(assistant);
-        // AddBookToShelves(assistant);
-        // System.out.println(FictionShelf);
+
     }
 }

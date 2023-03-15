@@ -1,33 +1,31 @@
 import java.util.*;
 
 public class Box implements Runnable{
-    static int space = 50;
-    public static List<Book> BookInBox = new ArrayList<Book>();
+    static int MaxBooks = 50;
+    public static List<Books> BooksInBox = new ArrayList<Books>();
     static Box Box_1;
     static Box box = CreateNewBox();
     static Delivery delivery = new Delivery();
 
 
-    // Need Function to print contents of Box
-    public static List<Book> getBook() {
-        List<Book> books = new ArrayList<>();
+    public static List<Books> getBooks() {
+        List<Books> books = new ArrayList<>();
     
-        synchronized (BookInBox) {
-            // Wait until the box has books
-            while (BookInBox.isEmpty()) {
+        synchronized (BooksInBox) {
+            // Checks to see if box is empty. If so, it waits until there is books in the box
+            while (BooksInBox.isEmpty()) {
                 try {
-                    BookInBox.wait();
+                    BooksInBox.wait();
                 } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
     
-            // Take up to 10 books from the box
-            Iterator<Book> iterator = BookInBox.iterator();
+            // Take maximum 10 books from the box
+            Iterator<Books> iterator = BooksInBox.iterator();
             int count = 0;
             while (iterator.hasNext() && count < 10) {
-                Book book = iterator.next();
+                Books book = iterator.next();
                 iterator.remove();
                 books.add(book);
                 count++;
@@ -36,58 +34,54 @@ public class Box implements Runnable{
     
         return books;
     }
-
-    public List<Book> FillBox(List<Book> DeliveryList) {
+    // Fills the box with books from delivery
+    public List<Books> FillBox(List<Books> DeliveryList) {
         int i = 0;
             if (DeliveryList.size() != 0) 
             {
                 while (i < DeliveryList.size()) 
                 {
-                    if(BookInBox.size() == space){
-                        return BookInBox;
+                    if(BooksInBox.size() == MaxBooks){
+                        return BooksInBox;
                     }
-                    Book x = DeliveryList.get(i);
+                    Books x = DeliveryList.get(i);
                     
-                    BookInBox.add(x);
+                    BooksInBox.add(x);
                     
                     i++;
                 }
             }
 
-        return BookInBox;
+        return BooksInBox;
     }
-
+    // finds number of books in the box 
     public int size() {
-        int Size = BookInBox.size();
-
-        // System.out.print(Size);
-
+        int Size = BooksInBox.size();
         return Size;
     }
-
+    // creates new box
     public static Box CreateNewBox() {
         Box box = new Box();
-        // System.out.println(box.getClass());
         return box;
     }
-
+    // converts BooksInBox to string
     @Override
     public String toString() {
-        return ""+BookInBox;
+        return ""+BooksInBox;
     }
-
+    // creates a new box, generates delivery and fills the box with the contents of delivery
     public static void main(String[] args){
         Box box = CreateNewBox();
         Delivery Delivery = new Delivery();
-        List<Book> delivery_1 = Delivery.GenerateDelivery();
+        List<Books> delivery_1 = Delivery.GenerateDelivery();
         box.FillBox(delivery_1);
 
     }
     @Override
     public void run() {
-            List<Book> deliveredContents1 = Delivery.GenerateDelivery();
-            box.FillBox(new ArrayList<>(deliveredContents1));
-            deliveredContents1.clear();
+            List<Books> DeliveredBooks = Delivery.GenerateDelivery();
+            box.FillBox(new ArrayList<>(DeliveredBooks));
+            DeliveredBooks.clear();
         }
                     
     }
