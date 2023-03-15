@@ -1,4 +1,3 @@
-
 import java.util.Random;
 import java.util.*;
 
@@ -17,12 +16,12 @@ public class Book {
 
     public static String getSection() {
         List<String> sectionNameList = new ArrayList<String>();
-        sectionNameList.add("Horror");
         sectionNameList.add("Fiction");
-        sectionNameList.add("Poetry");
-        sectionNameList.add("History");
-        sectionNameList.add("Sport");
+        sectionNameList.add("Crime");
         sectionNameList.add("Fantasy");
+        sectionNameList.add("Romance");
+        sectionNameList.add("Horror");
+        sectionNameList.add("Sport");
 
         Random rand = new Random();
         int upperRange = sectionNameList.size();

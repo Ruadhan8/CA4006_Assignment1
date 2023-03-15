@@ -2,15 +2,15 @@ import java.util.*;
 import java.security.SecureRandom;
 
 public class Delivery {
-    static Object Book = new Book();
+    static Object Books = new Book();
     static int size = 10;
     public static List<Book> DeliveryList = new ArrayList<Book>();
-    
-    public static List<Book> GenerateDelivery(){
+
+    public static List<Book> GenerateDelivery() {
         int i = 0;
 
         while (i < size) {
-            Book book  = new Book();
+            Book book = new Book();
 
             book.setSection();
 
@@ -18,31 +18,53 @@ public class Delivery {
 
             i++;
         }
-        System.out.print(DeliveryList);
-        return DeliveryList;
 
+        // Used for Testing .... System.out.print(DeliveryList);
+
+        return DeliveryList;
     }
 
     public int size() {
         int Size = DeliveryList.size();
-        System.out.print(Size);
+
+        // System.out.print(Size);
+
         return Size;
     }
 
-    public static int NextDeliveryTime() {
-        SecureRandom rand = new SecureRandom();
-
-        int TicksTillDelivery = rand.nextInt(100);
-
-        if(TicksTillDelivery == 0){
-            TicksTillDelivery = 100;
-
+    public static String NextDeliveryTime() {
+        List<String> ProbabilityOfDelivery = new ArrayList<String>();
+        var i = 0;
+        while (i < 100) {
+            if (i != 99) {
+                ProbabilityOfDelivery.add("False");
+            } else {
+                ProbabilityOfDelivery.add("True");
+            }
+            i++;
         }
-        return TicksTillDelivery;
+
+        int UpperRange = ProbabilityOfDelivery.size();
+
+        Random rand = new Random();
+        int Index = rand.nextInt(UpperRange);
+
+        String IsDelivery = ProbabilityOfDelivery.get(Index);
+
+        return IsDelivery;
+    }
+
+    @Override
+    public String toString() {
+        return "" + DeliveryList;
+    }
+
+    public static void main(String[] args) {
+        String isDelivery = NextDeliveryTime();
+        if (isDelivery == "True") {
+            GenerateDelivery();
+        }
 
     }
 
-    public static void main(String[] args){
-        System.out.print(GenerateDelivery());
-    }
 }
