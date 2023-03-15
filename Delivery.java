@@ -2,9 +2,10 @@ import java.util.*;
 import java.security.SecureRandom;
 
 public class Delivery {
-    static Object Books = new Book();
+    static Object Book = new Book();
     static int size = 10;
     public static List<Book> DeliveryList = new ArrayList<Book>();
+    static int DeliveryCount = 0;
 
     public static List<Book> GenerateDelivery() {
         int i = 0;
@@ -12,7 +13,7 @@ public class Delivery {
         while (i < size) {
             Book book = new Book();
 
-            book.setSection();
+            book.setCategory();
 
             DeliveryList.add(book);
 
@@ -30,6 +31,11 @@ public class Delivery {
         // System.out.print(Size);
 
         return Size;
+    }
+
+    @Override
+    public String toString() {
+        return "" + DeliveryList;
     }
 
     public static String NextDeliveryTime() {
@@ -54,15 +60,11 @@ public class Delivery {
         return IsDelivery;
     }
 
-    @Override
-    public String toString() {
-        return "" + DeliveryList;
-    }
-
     public static void main(String[] args) {
         String isDelivery = NextDeliveryTime();
         if (isDelivery == "True") {
-            GenerateDelivery();
+            System.out.println(GenerateDelivery());
+            DeliveryCount++;
         }
 
     }

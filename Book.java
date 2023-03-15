@@ -1,40 +1,50 @@
-import java.util.Random;
 import java.util.*;
-
+import java.util.Random;
 
 public class Book {
-    String Section;
+    String Category;
 
-    public void Section(){
-        System.out.println("Book Section is: " + Section);
+    public void Category() {
+        System.out.println("Book Category is : " + Category);
     }
 
-    public void setSection(){
-        Section = getSection();
+    public void setCategory() {
+        Category = GiveBookACategorie();
     }
 
+    @Override
+    public String toString() {
+        return "" + Category;
+    }
 
-    public static String getSection() {
-        List<String> sectionNameList = new ArrayList<String>();
-        sectionNameList.add("Fiction");
-        sectionNameList.add("Crime");
-        sectionNameList.add("Fantasy");
-        sectionNameList.add("Romance");
-        sectionNameList.add("Horror");
-        sectionNameList.add("Sport");
+    public static String GiveBookACategorie() {
+        List<String> ListOfCategories = new ArrayList<String>();
+        ListOfCategories.add("Fiction");
+        ListOfCategories.add("Crime");
+        ListOfCategories.add("Fantasy");
+        ListOfCategories.add("Romance");
+        ListOfCategories.add("Horror");
+        ListOfCategories.add("Sport");
+        int UpperRange = ListOfCategories.size();
 
         Random rand = new Random();
-        int upperRange = sectionNameList.size();
-        int i = rand.nextInt(upperRange);
+        int Index = rand.nextInt(UpperRange);
 
-        String BookSection = sectionNameList.get(i);
-        return BookSection;
+        String BookCategory = ListOfCategories.get(Index);
+
+        return BookCategory;
     }
 
-
-
-    public static void main(String[] args){
+    public static Book GenerateBook() {
         Book book = new Book();
-        book.setSection();
+        book.setCategory();
+
+        return book;
+    }
+    
+
+    public static void main(String[] args) {
+        Book book = new Book();
+        book.setCategory();
     }
 }

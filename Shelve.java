@@ -1,5 +1,4 @@
 import java.util.*;
-import java.util.Queue;
 
 public class Shelve {
     static int capacity = 20;
@@ -62,6 +61,15 @@ public class Shelve {
         CustomerWaitingLine.add(Customer);
 
         return CustomerWaitingLine;
+    }
+
+    public static boolean LineEmpty(Queue<String> CustomerWaitingLine) {
+        if (CustomerWaitingLine.size() == 0) {
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     @Override

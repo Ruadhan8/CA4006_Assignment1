@@ -1,4 +1,5 @@
 import java.util.*;
+
 public class Box implements Runnable{
     static int space = 50;
     public static List<Book> BookInBox = new ArrayList<Book>();
@@ -84,7 +85,7 @@ public class Box implements Runnable{
     }
     @Override
     public void run() {
-            List<Book> deliveredContents1 = delivery.GenerateDelivery();
+            List<Book> deliveredContents1 = Delivery.GenerateDelivery();
             box.FillBox(new ArrayList<>(deliveredContents1));
             deliveredContents1.clear();
         }
