@@ -1,6 +1,7 @@
 import java.util.*;
 
 public class Box implements Runnable{
+    // Introducing a box class
     static int MaxBooks = 50;
     public static List<Books> BooksInBox = new ArrayList<Books>();
     static Box Box_1;

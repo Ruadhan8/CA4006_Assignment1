@@ -64,7 +64,7 @@ public class Main {
             }
         }
 
-        System.out.println("Each Shelf contains 1 book");
+        System.out.println("The bookstore has opened for the day! Each shelf contains one book.");
 
     }
 

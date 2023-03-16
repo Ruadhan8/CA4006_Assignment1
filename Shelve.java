@@ -18,7 +18,7 @@ public class Shelve {
 
     // adds books to shelves
     public static void AddBooksToShelves(Books book) {
-
+        // will only add if there is enough space on the shelf. This is repeated for all of the different genres.
         if (book.toString().equals("Fiction")) {
             if (FictionShelf.size() < MaxBooksOnShelf) {
                 FictionShelf.add(book);
@@ -46,13 +46,16 @@ public class Shelve {
         }
     }
 
+    // creates a queue for customers to wait if they want a book in a genre that there are no books on the shelf.
     public static Queue<String> CustomerWaitingQueue(Queue<String> CustomerWaitingQueue, String Customer) {
 
+        // adds customer to the queue
         CustomerWaitingQueue.add(Customer);
         return CustomerWaitingQueue;
     }
 
-    public static boolean LineEmpty(Queue<String> CustomerWaitingQueue) {
+    // checks to see if the queue is empty or not.
+    public static boolean QueueEmpty(Queue<String> CustomerWaitingQueue) {
         if (CustomerWaitingQueue.size() == 0) {
             return true;
         } else {
