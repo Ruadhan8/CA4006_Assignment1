@@ -8,7 +8,7 @@ public class Box implements Runnable{
     static Delivery delivery = new Delivery();
 
 
-    public static List<Books> getBooks() {
+    public static List<Books> takeBooks() {
         List<Books> books = new ArrayList<>();
     
         synchronized (BooksInBox) {

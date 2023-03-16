@@ -165,11 +165,11 @@ public class Customer implements Runnable {
                             int WaitTime = WaitTime(ArrivalTime, DepartureTime);
                             // adding the customer wait time to a list to be used to calculate average wait time for the day
                             WaitTimeList(WaitTime);
-                            System.out.println("<" + Main.tickCount + ">" + "<" + threadId + ">" + customer +" bought a book from " + genre + " section." + "The Customer spent " + WaitTime + " shopping");
+                            System.out.println("<" + Main.tickCount + ">" + "<" + threadId + ">" + customer +" bought a book from " + genre + " section." + "The Customer spent " + WaitTime + " ticks in the bookstore");
                         } // this is the second event a customer arrives and the shelf isn't empty but the line isn't empty either 
                         else if (!Shelve.FictionShelf.isEmpty() && !Shelve.FictionWaitingLine.isEmpty()) {
                             // adding the current customer to the waiting queue
-                            Shelve.CustomerWaitingLine(Shelve.FictionWaitingLine, CustomerAndStartTime);
+                            Shelve.CustomerWaitingQueue(Shelve.FictionWaitingLine, CustomerAndStartTime);
                             // get the customer who is first in the line
                             String CustomerInQueue = Shelve.FictionWaitingLine.remove();
                             // split this string into parts
@@ -185,11 +185,11 @@ public class Customer implements Runnable {
                             int WaitTime = WaitTime(ArrivalTime, DepartureTime);
                             // add this wait time to a list
                             WaitTimeList(WaitTime);
-                            System.out.println("<" + Main.tickCount + ">" + "<" + threadId + ">" + CustomerToServe + " bought a book from "+ genre + " section." + " The Customer spent " + WaitTime + " shopping.");
+                            System.out.println("<" + Main.tickCount + ">" + "<" + threadId + ">" + CustomerToServe + " bought a book from "+ genre + " section." + " The Customer spent " + WaitTime + " ticks in the bookstore.");
                         } // this is the third case where the shelf is empty
                         else if (Shelve.FictionShelf.isEmpty()) {
                             // the customer is added to the appropriate waiting line
-                            Shelve.CustomerWaitingLine(Shelve.FictionWaitingLine, CustomerAndStartTime);
+                            Shelve.CustomerWaitingQueue(Shelve.FictionWaitingLine, CustomerAndStartTime);
                             System.out
                                     .println("<" + Main.tickCount + ">" + "<" + threadId + ">" + customer + " joined the waiting line for " + genre);
                         }
@@ -205,10 +205,10 @@ public class Customer implements Runnable {
                             String DepartureTime = parts[2];
                             int WaitTime = WaitTime(ArrivalTime, DepartureTime);
                             WaitTimeList(WaitTime);
-                            System.out.println("<" + Main.tickCount + ">" + "<" + threadId + ">" + customer + " bought a book from " + genre + " section." + " The Customer spent " + WaitTime + " shopping.");
+                            System.out.println("<" + Main.tickCount + ">" + "<" + threadId + ">" + customer + " bought a book from " + genre + " section." + " The Customer spent " + WaitTime + " ticks in the bookstore.");
 
                         } else if (!Shelve.FantasyShelf.isEmpty() && !Shelve.FantasyWaitingLine.isEmpty()) {
-                            Shelve.CustomerWaitingLine(Shelve.FantasyWaitingLine, CustomerAndStartTime);
+                            Shelve.CustomerWaitingQueue(Shelve.FantasyWaitingLine, CustomerAndStartTime);
                             String CustomerInQueue = Shelve.FantasyWaitingLine.remove();
                             String[] parts = CustomerInQueue.split(":");
                             String CustomerToServe = parts[0];
@@ -217,9 +217,9 @@ public class Customer implements Runnable {
                             String DepartureTime = Integer.toString(Main.tickCount);
                             int WaitTime = WaitTime(ArrivalTime, DepartureTime);
                             WaitTimeList(WaitTime);
-                            System.out.println("<" + Main.tickCount + ">" + "<" + threadId + ">" + CustomerToServe + " bought a book from " + genre + " section." + " The Customer spent " + WaitTime + " shopping");
+                            System.out.println("<" + Main.tickCount + ">" + "<" + threadId + ">" + CustomerToServe + " bought a book from " + genre + " section." + " The Customer spent " + WaitTime + " ticks in the bookstore");
                         } else if (Shelve.FantasyShelf.isEmpty()) {
-                            Shelve.CustomerWaitingLine(Shelve.FantasyWaitingLine, CustomerAndStartTime);
+                            Shelve.CustomerWaitingQueue(Shelve.FantasyWaitingLine, CustomerAndStartTime);
                             System.out
                             .println("<" + Main.tickCount + ">" + "<" + threadId + ">" + customer + " joined the waiting line for " + genre);
                         }
@@ -235,9 +235,9 @@ public class Customer implements Runnable {
                             String DepartureTime = parts[2];
                             int WaitTime = WaitTime(ArrivalTime, DepartureTime);
                             WaitTimeList(WaitTime);
-                            System.out.println("<" + Main.tickCount + ">" + "<" + threadId + ">" + customer + " bought a book from " + genre + " section." + "The Customer spent " + WaitTime + " shopping");
+                            System.out.println("<" + Main.tickCount + ">" + "<" + threadId + ">" + customer + " bought a book from " + genre + " section." + "The Customer spent " + WaitTime + " ticks in the bookstore");
                         } else if (!Shelve.HistoryShelf.isEmpty() && !Shelve.HistoryWaitingLine.isEmpty()) {
-                            Shelve.CustomerWaitingLine(Shelve.HistoryWaitingLine, CustomerAndStartTime);
+                            Shelve.CustomerWaitingQueue(Shelve.HistoryWaitingLine, CustomerAndStartTime);
                             String CustomerInQueue = Shelve.HistoryWaitingLine.remove();
                             String[] parts = CustomerInQueue.split(":");
                             String CustomerToServe = parts[0];
@@ -246,9 +246,9 @@ public class Customer implements Runnable {
                             String DepartureTime = Integer.toString(Main.tickCount);
                             int WaitTime = WaitTime(ArrivalTime, DepartureTime);
                             WaitTimeList(WaitTime);
-                            System.out.println("<" + Main.tickCount + ">" + "<" + threadId + ">" + CustomerToServe + " bought a book from " + genre + " section." + " The Customer spent " + WaitTime + " shopping.");
+                            System.out.println("<" + Main.tickCount + ">" + "<" + threadId + ">" + CustomerToServe + " bought a book from " + genre + " section." + " The Customer spent " + WaitTime + " ticks in the bookstore.");
                         } else if (Shelve.HistoryShelf.isEmpty()) {
-                            Shelve.CustomerWaitingLine(Shelve.HistoryWaitingLine, CustomerAndStartTime);
+                            Shelve.CustomerWaitingQueue(Shelve.HistoryWaitingLine, CustomerAndStartTime);
                             System.out
                             .println("<" + Main.tickCount + ">" + "<" + threadId + ">" + customer + " joined the waiting line for " + genre);
                         }
@@ -264,9 +264,9 @@ public class Customer implements Runnable {
                             String DepartureTime = parts[2];
                             int WaitTime = WaitTime(ArrivalTime, DepartureTime);
                             WaitTimeList(WaitTime);
-                            System.out.println("<" + Main.tickCount + ">" + "<" + threadId + ">" + customer + " bought a book from " + genre + " section." + "The Customer spent " + WaitTime + " shopping");
+                            System.out.println("<" + Main.tickCount + ">" + "<" + threadId + ">" + customer + " bought a book from " + genre + " section." + "The Customer spent " + WaitTime + " ticks in the bookstore");
                         } else if (!Shelve.RomanceShelf.isEmpty() && !Shelve.RomanceWaitingLine.isEmpty()) {
-                            Shelve.CustomerWaitingLine(Shelve.RomanceWaitingLine, CustomerAndStartTime);
+                            Shelve.CustomerWaitingQueue(Shelve.RomanceWaitingLine, CustomerAndStartTime);
                             String CustomerInQueue = Shelve.RomanceWaitingLine.remove();
                             String[] parts = CustomerInQueue.split(":");
                             String CustomerToServe = parts[0];
@@ -275,9 +275,9 @@ public class Customer implements Runnable {
                             String DepartureTime = Integer.toString(Main.tickCount);
                             int WaitTime = WaitTime(ArrivalTime, DepartureTime);
                             WaitTimeList(WaitTime);
-                            System.out.println("<" + Main.tickCount + ">" + "<" + threadId + ">" + CustomerToServe + " bought a book from " + genre + " section." + " The Customer spent " + WaitTime + " shopping.");
+                            System.out.println("<" + Main.tickCount + ">" + "<" + threadId + ">" + CustomerToServe + " bought a book from " + genre + " section." + " The Customer spent " + WaitTime + " ticks in the bookstore.");
                         } else if (Shelve.RomanceShelf.isEmpty()) {
-                            Shelve.CustomerWaitingLine(Shelve.RomanceWaitingLine, CustomerAndStartTime);
+                            Shelve.CustomerWaitingQueue(Shelve.RomanceWaitingLine, CustomerAndStartTime);
                             System.out
                             .println("<" + Main.tickCount + ">" + "<" + threadId + ">" + customer + " joined the waiting line for " + genre);
                         }
@@ -293,9 +293,9 @@ public class Customer implements Runnable {
                             String DepartureTime = parts[2];
                             int WaitTime = WaitTime(ArrivalTime, DepartureTime);
                             WaitTimeList(WaitTime);
-                            System.out.println("<" + Main.tickCount + ">" + "<" + threadId + ">" + customer + " bought a book from " + genre + " section." + "The Customer spent " + WaitTime + " shopping");
+                            System.out.println("<" + Main.tickCount + ">" + "<" + threadId + ">" + customer + " bought a book from " + genre + " section." + "The Customer spent " + WaitTime + " ticks in the bookstore");
                         } else if (!Shelve.HorrorShelf.isEmpty() && !Shelve.HorrorWaitingLine.isEmpty()) {
-                            Shelve.CustomerWaitingLine(Shelve.HorrorWaitingLine, CustomerAndStartTime);
+                            Shelve.CustomerWaitingQueue(Shelve.HorrorWaitingLine, CustomerAndStartTime);
                             String CustomerInQueue = Shelve.HorrorWaitingLine.remove();
                             String[] parts = CustomerInQueue.split(":");
                             String CustomerToServe = parts[0];
@@ -304,9 +304,9 @@ public class Customer implements Runnable {
                             String DepartureTime = Integer.toString(Main.tickCount);
                             int WaitTime = WaitTime(ArrivalTime, DepartureTime);
                             WaitTimeList(WaitTime);
-                            System.out.println("<" + Main.tickCount + ">" + "<" + threadId + ">" + CustomerToServe + " bought a book from " + genre + " section." + " The Customer spent " + WaitTime + " shopping.");
+                            System.out.println("<" + Main.tickCount + ">" + "<" + threadId + ">" + CustomerToServe + " bought a book from " + genre + " section." + " The Customer spent " + WaitTime + " ticks in the bookstore.");
                         } else if (Shelve.HorrorShelf.isEmpty()) {
-                            Shelve.CustomerWaitingLine(Shelve.HorrorWaitingLine, CustomerAndStartTime);
+                            Shelve.CustomerWaitingQueue(Shelve.HorrorWaitingLine, CustomerAndStartTime);
                             System.out
                             .println("<" + Main.tickCount + ">" + "<" + threadId + ">" + customer + " joined the waiting line for " + genre);
                         }
@@ -322,9 +322,9 @@ public class Customer implements Runnable {
                             String DepartureTime = parts[2];
                             int WaitTime = WaitTime(ArrivalTime, DepartureTime);
                             WaitTimeList(WaitTime);
-                            System.out.println("<" + Main.tickCount + ">" + "<" + threadId + ">" + customer + " bought a book from " + genre + " section." + "The Customer spent " + WaitTime + " shopping");
+                            System.out.println("<" + Main.tickCount + ">" + "<" + threadId + ">" + customer + " bought a book from " + genre + " section." + "The Customer spent " + WaitTime + " ticks in the bookstore");
                         } else if (!Shelve.PoetryShelf.isEmpty() && Shelve.PoetryWaitingLine.isEmpty()) {
-                            Shelve.CustomerWaitingLine(Shelve.PoetryWaitingLine, CustomerAndStartTime);
+                            Shelve.CustomerWaitingQueue(Shelve.PoetryWaitingLine, CustomerAndStartTime);
                             String CustomerInQueue = Shelve.PoetryWaitingLine.remove();
                             String[] parts = CustomerInQueue.split(":");
                             String CustomerToServe = parts[0];
@@ -333,9 +333,9 @@ public class Customer implements Runnable {
                             String DepartureTime = Integer.toString(Main.tickCount);
                             int WaitTime = WaitTime(ArrivalTime, DepartureTime);
                             WaitTimeList(WaitTime);
-                            System.out.println("<" + Main.tickCount + ">" + "<" + threadId + ">" + CustomerToServe + " bought a book from " + genre + " section." + " The Customer spent " + WaitTime + " shopping.");
+                            System.out.println("<" + Main.tickCount + ">" + "<" + threadId + ">" + CustomerToServe + " bought a book from " + genre + " section." + " The Customer spent " + WaitTime + " ticks in the bookstore.");
                         } else if (Shelve.PoetryShelf.isEmpty()) {
-                            Shelve.CustomerWaitingLine(Shelve.PoetryWaitingLine, CustomerAndStartTime);
+                            Shelve.CustomerWaitingQueue(Shelve.PoetryWaitingLine, CustomerAndStartTime);
                             System.out
                             .println("<" + Main.tickCount + ">" + "<" + threadId + ">" + customer + " joined the waiting line for " + genre);
                         }

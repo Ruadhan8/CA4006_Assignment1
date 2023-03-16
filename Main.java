@@ -72,11 +72,11 @@ public class Main {
     public static void main(String[] args) {
         // introducing popup GUI boxes
         JFrame jFrame = new JFrame();
-        String getAssistants = JOptionPane.showInputDialog(jFrame, "How many assistants would you like to work in the store?");
+        String getAssistants = JOptionPane.showInputDialog(jFrame, "Select a number of assistants to work in the bookstore.");
             
-        JOptionPane.showMessageDialog(jFrame, "You Have Selected This Many Assistant: " + getAssistants);
+        JOptionPane.showMessageDialog(jFrame, "You Have Selected " + getAssistants + " Assistants.");
 
-        String getTicks = JOptionPane.showInputDialog(jFrame, "What would you like the ticks to seconds mapping to be like? (1000 is one tick a second a lower value is faster and a bigger value is slower)");
+        String getTicks = JOptionPane.showInputDialog(jFrame, "Select a tick to second mapping. (1000 is one tick a second. A larger value makes the bookstore run slower and a smaller value increases the speed of the bookstore.)");
             
         JOptionPane.showMessageDialog(jFrame, "You Have Selected This Mapping: " + getTicks);
 
@@ -100,8 +100,8 @@ public class Main {
         // adding the threads to a list of threads
         List<Thread> threads = new ArrayList<>();
         for (int i = 0; i < Assistants_Amount; i++) {
-            assistants.add(new Assistant("Assistant-" + i, BooksPossessed, booksCounter));
-            threads.add(new Thread(new Assistant("Assistant-" + i, BooksPossessed, booksCounter)));
+            assistants.add(new Assistant("Assistant #" + i, BooksPossessed, booksCounter));
+            threads.add(new Thread(new Assistant("Assistant #" + i, BooksPossessed, booksCounter)));
         }
         threads.add(new Thread(new Customer()));
         threads.add(new Thread(new Tick(box)));

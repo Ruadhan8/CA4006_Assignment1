@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 // Tick class to manage the passing of time and statistics for the EOD in the store
@@ -74,11 +72,11 @@ public class Tick implements Runnable {
                     CustomersPrior = Customer.customerCount;
                     CustomersServedPrior = Customer.servedCustomerCount;
 
-                    System.out.println("It is the end of the day here are the statistics for the day: ");
-                    System.out.println("There were this many customers visting today: " + CustomersInDay);
-                    System.out.println("There were this many customers served today: " + CustomersServedInDay);
-                    System.out.println("There were this many deliverys: " + DeliveryAmount);
-                    System.out.println("The average wait time of customers was: " + AverageWaitTime);
+                    System.out.println("The bookstore has closed for the day. Here are the statistics: ");
+                    System.out.println("Customers in the store today: " + CustomersInDay);
+                    System.out.println("Customers served today: " + CustomersServedInDay);
+                    System.out.println("Number of deliverys today: " + DeliveryAmount);
+                    System.out.println("The average wait time of customers:  " + AverageWaitTime);
         
                     Customer.ClearWaitTime(Customer.CustomerWaitTimes); 
                     Tick.DeliveryCount = 0; 
